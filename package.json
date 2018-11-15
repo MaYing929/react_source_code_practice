@@ -1,0 +1,19 @@
+{
+  "name": "react_source_code_practice",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "parcel index.html",
+    "watch" :"parcel watch index.html"
+  },
+  "keywords": [],
+  "author": "亦舒",
+  "license": "ISC",
+  "description": "react源码实践 动手写轮子",
+  "devDependencies": {
+    "babel-core": "^6.26.3",
+    "babel-plugin-transform-react-jsx": "^6.24.1",
+    "babel-preset-env": "^1.7.0"
+  }
+}
