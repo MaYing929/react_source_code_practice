@@ -1,6 +1,5 @@
-import React from './react';
-import ReactDom from './react-dom';
-
+import React from './react/index.js'
+import ReactDOM from './react-dom/index.js'
 
 class Welcome extends React.Component {
     render() {
@@ -45,7 +44,7 @@ class  Counter extends React.Component {
 }
 
 
-ReactDom.render(
+ReactDOM.render(
     <Counter />,
     document.getElementById('root')
 )
