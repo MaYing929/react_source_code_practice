@@ -173,7 +173,8 @@ function createComponent(component, props) {
   }
 
   return inst;
-}
+} // 添加卸载的方法
+
 
 function unmountComponent(component) {
   if (component.componentWillUnmount) component.componentWillUnmount();
@@ -181,6 +182,7 @@ function unmountComponent(component) {
 }
 
 function setComponentProps(component, props) {
+  // 用来判断是第几次render 第一次走WillMount 其他其实都是走的update
   if (!component.base) {
     if (component.componentWillMount) component.componentWillMount();
   } else if (component.componentWillReceiveProps) {
@@ -189,7 +191,8 @@ function setComponentProps(component, props) {
 
   component.props = props;
   renderComponent(component);
-}
+} // renderComponent方法用来渲染组件，setState方法中会直接调用这个方法进行重新渲染，在这个方法里可以实现componentWillUpdate，componentDidUpdate，componentDidMount几个生命周期方法
+
 
 function renderComponent(component) {
   var base;
@@ -222,7 +225,8 @@ function _render(vnode) {
   if (typeof vnode === 'string') {
     var textNode = document.createTextNode(vnode);
     return textNode;
-  }
+  } // 如果是组件渲染
+
 
   if (typeof vnode.tag === 'function') {
     var component = createComponent(vnode.tag, vnode.attrs);
@@ -300,10 +304,6 @@ Object.defineProperty(exports, "__esModule", {
 });
 exports.default = void 0;
 
-var _component = _interopRequireDefault(require("./component.js"));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
 function createElement(tag, attrs) {
   for (var _len = arguments.length, children = new Array(_len > 2 ? _len - 2 : 0), _key = 2; _key < _len; _key++) {
     children[_key - 2] = arguments[_key];
@@ -318,7 +318,7 @@ function createElement(tag, attrs) {
 
 var _default = createElement;
 exports.default = _default;
-},{"./component.js":"src/react/component.js"}],"src/react/index.js":[function(require,module,exports) {
+},{}],"src/react/index.js":[function(require,module,exports) {
 "use strict";
 
 Object.defineProperty(exports, "__esModule", {
@@ -393,7 +393,7 @@ function (_React$Component) {
   _createClass(Welcome, [{
     key: "render",
     value: function render() {
-      return _react.default.createElement("h1", null, "Hello, ", this.props.name);
+      return _react.default.createElement("span", null, "Hello, ", this.props.name);
     }
   }]);
 
@@ -437,19 +437,9 @@ function (_React$Component2) {
   }, {
     key: "render",
     value: function render() {
-      var _this2 = this;
-
       return _react.default.createElement("div", null, _react.default.createElement(Welcome, {
         name: "sadc"
-      }), _react.default.createElement(Welcome, {
-        name: "lazy"
-      }), _react.default.createElement(Welcome, {
-        name: "safari"
-      }), _react.default.createElement("h1", null, "hello yishu"), _react.default.createElement("h1", null, "count:", this.state.num), _react.default.createElement("button", {
-        onClick: function onClick() {
-          return _this2.onClick();
-        }
-      }, "add"));
+      }));
     }
   }]);
 
@@ -484,7 +474,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "65379" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "62803" + '/');
 
   ws.onmessage = function (event) {
     var data = JSON.parse(event.data);

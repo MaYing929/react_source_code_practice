@@ -1,4 +1,3 @@
-import Component from './component.js'
 
 function createElement( tag, attrs, ...children ) {
 

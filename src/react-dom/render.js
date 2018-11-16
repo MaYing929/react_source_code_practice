@@ -18,14 +18,14 @@ function createComponent( component, props ) {
     return inst;
 }
 
-
+// 添加卸载的方法
 function unmountComponent( component ) {
     if ( component.componentWillUnmount ) component.componentWillUnmount();
     removeNode( component.base);
 }
 
 function setComponentProps( component, props ) {
-
+    // 用来判断是第几次render 第一次走WillMount 其他其实都是走的update
     if ( !component.base ) {
             if ( component.componentWillMount ) component.componentWillMount();
       } else if ( component.componentWillReceiveProps ) {
@@ -38,6 +38,7 @@ function setComponentProps( component, props ) {
 
 }
 
+// renderComponent方法用来渲染组件，setState方法中会直接调用这个方法进行重新渲染，在这个方法里可以实现componentWillUpdate，componentDidUpdate，componentDidMount几个生命周期方法
 export function renderComponent( component ) {
 
     let base;
@@ -75,9 +76,8 @@ function _render( vnode ) {
         let textNode = document.createTextNode( vnode );
         return textNode;
     }
-
+    // 如果是组件渲染
     if ( typeof vnode.tag === 'function' ) {
-
         const component = createComponent( vnode.tag, vnode.attrs );
 
         setComponentProps( component, vnode.attrs );
