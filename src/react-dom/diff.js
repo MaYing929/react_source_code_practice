@@ -1,4 +1,4 @@
-import { Componet } from '../react'
+import { Component } from '../react'
 import { setAttribute } from './dom'
 
 /**
@@ -18,7 +18,7 @@ export function diff( dom, vnode, container ) {
     return ret;
 
 }
-// 对比
+
 function diffNode( dom, vnode ) {
 
     let out = dom;
@@ -27,7 +27,7 @@ function diffNode( dom, vnode ) {
 
     if ( typeof vnode === 'number' ) vnode = String( vnode );
 
-    // diff text node 对比文本节点
+    // diff text node
     if ( typeof vnode === 'string' ) {
 
         // 如果当前的DOM就是文本节点，则直接更新内容
@@ -45,12 +45,12 @@ function diffNode( dom, vnode ) {
 
         return out;
     }
-    // 如果是组件 那就对比组件
+
     if ( typeof vnode.tag === 'function' ) {
         return diffComponent( dom, vnode );
     }
-    // 对比非文本Dom节点
-    //判断节点的类型是否一致 如果不一致那就新建一个Dom元素  将原来的子节点（如果有的话 移动到新建立的dom节点下）
+
+    //
     if ( !dom || !isSameNodeType( dom, vnode ) ) {
         out = document.createElement( vnode.tag );
 
@@ -62,11 +62,11 @@ function diffNode( dom, vnode ) {
             }
         }
     }
-    // 对比子节点 （给节点设一个key值，重新渲染时对比key值相同的节点。）
+
     if ( vnode.children && vnode.children.length > 0 || ( out.childNodes && out.childNodes.length > 0 ) ) {
         diffChildren( out, vnode.children );
     }
-    // 对比属性
+
     diffAttributes( out, vnode );
 
     return out;
@@ -85,7 +85,6 @@ function diffChildren( dom, vchildren ) {
             const child = domChildren[ i ];
             const key = child.key;
             if ( key ) {
-                keyedLen++;
                 keyed[ key ] = child;
             } else {
                 children.push( child );
@@ -103,18 +102,19 @@ function diffChildren( dom, vchildren ) {
             const vchild = vchildren[ i ];
             const key = vchild.key;
             let child;
-            // 如果有key，找到对应key值的节点
+
             if ( key ) {
+
                 if ( keyed[ key ] ) {
                     child = keyed[ key ];
                     keyed[ key ] = undefined;
                 }
-                // 如果没有key，则优先找类型相同的节点
+
             } else if ( min < childrenLen ) {
 
                 for ( let j = min; j < childrenLen; j++ ) {
 
-                    let c = children[ j ];
+                    const c = children[ j ];
 
                     if ( c && isSameNodeType( c, vchild ) ) {
 
@@ -130,20 +130,16 @@ function diffChildren( dom, vchildren ) {
                 }
 
             }
-            // 对比
+
             child = diffNode( child, vchild );
-              // 更新dom
+
             const f = domChildren[ i ];
             if ( child && child !== dom && child !== f ) {
-                // 如果更新前的对应位置为空 说明此节点是新增的
                 if ( !f ) {
-                    dom.appendChild(child);
-                    // 如果更新后的节点和更新前对应位置的下一个节点一样儿 说明当前的节点被移除了
+                    dom.appendChild( child );
                 } else if ( child === f.nextSibling ) {
                     removeNode( f );
-                    // 将更新后的节点移动到正确的位置
                 } else {
-                    // 第一个参数 要插入的节点 第二个参数是已经存在的节点
                     dom.insertBefore( child, f );
                 }
             }
@@ -153,7 +149,6 @@ function diffChildren( dom, vchildren ) {
 
 }
 
-// 对比组件
 function diffComponent( dom, vnode ) {
 
     let c = dom && dom._component;
@@ -213,9 +208,6 @@ export function renderComponent( component ) {
 
     base = diffNode( component.base, renderer );
 
-    component.base = base;
-    base._component = component;
-
     if ( component.base ) {
         if ( component.componentDidUpdate ) component.componentDidUpdate();
     } else if ( component.componentDidMount ) {
@@ -232,11 +224,12 @@ function createComponent( component, props ) {
     let inst;
 
     if ( component.prototype && component.prototype.render ) {
+        /* eslint-disable-next-line new-cap */
         inst = new component( props );
     } else {
         inst = new Component( props );
         inst.constructor = component;
-        inst.render = function() {
+        inst.render = function () {
             return this.constructor( props );
         }
     }
@@ -247,10 +240,9 @@ function createComponent( component, props ) {
 
 function unmountComponent( component ) {
     if ( component.componentWillUnmount ) component.componentWillUnmount();
-    removeNode( component.base);
+    removeNode( component.base );
 }
 
-// 是否是同一种节点类型
 function isSameNodeType( dom, vnode ) {
     if ( typeof vnode === 'string' || typeof vnode === 'number' ) {
         return dom.nodeType === 3;
@@ -268,13 +260,13 @@ function diffAttributes( dom, vnode ) {
     const old = {};    // 当前DOM的属性
     const attrs = vnode.attrs;     // 虚拟DOM的属性
 
-    for ( let i = 0 ; i < dom.attributes.length; i++ ) {
+    for ( let i = 0; i < dom.attributes.length; i++ ) {
         const attr = dom.attributes[ i ];
         old[ attr.name ] = attr.value;
     }
 
     // 如果原来的属性不在新的属性当中，则将其移除掉（属性值设为undefined）
-    for ( let name in old ) {
+    for ( const name in old ) {
 
         if ( !( name in attrs ) ) {
             setAttribute( dom, name, undefined );
@@ -283,7 +275,7 @@ function diffAttributes( dom, vnode ) {
     }
 
     // 更新新的属性值
-    for ( let name in attrs ) {
+    for ( const name in attrs ) {
 
         if ( old[ name ] !== attrs[ name ] ) {
             setAttribute( dom, name, attrs[ name ] );
@@ -293,7 +285,6 @@ function diffAttributes( dom, vnode ) {
 
 }
 
-// 移除节点
 function removeNode( dom ) {
 
     if ( dom && dom.parentNode ) {

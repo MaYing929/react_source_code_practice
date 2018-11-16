@@ -1,50 +1,34 @@
-import React from './react/index.js'
-import ReactDOM from './react-dom/index.js'
+import React from './react'
+import ReactDOM from './react-dom'
 
-class Welcome extends React.Component {
-    render() {
-        return <span>Hello, {this.props.name}</span>;
-    }
-}
-
-class  Counter extends React.Component {
-    constructor(props){
-        super(props);
+class App extends React.Component {
+    constructor() {
+        super();
         this.state = {
-            num:1
+            num: 0
         }
-
     }
-    componentWillUpdate() {
-        console.log( 'update' );
+    componentDidMount() {
+        for ( let i = 0; i < 100; i++ ) {
+            this.setState( prevState => {
+                console.log( prevState.num );
+                return {
+                    num: prevState.num + 1
+                }
+            } );
+        }
     }
-
-    componentWillMount() {
-        console.log( 'mount' );
+    componentDidUpdate() {
+        console.log( 'update' )
     }
-
-    onClick(){
-        this.setState({
-            num:this.state.num + 1
-        })
-    }
-
-    render(){
-        return(
-            <div>
-                <Welcome name="sadc" />
-                <Welcome name="lazy" />
-                <Welcome name="safari" />
-                <h1>hello yishu</h1>
-                <h1>count:{this.state.num}</h1>
-                <button onClick={()=>this.onClick()}>add</button>
-            </div>
-        )
+    render() {
+        return ( <div className='App'>
+            <h1>{this.state.num}</h1>
+        </div> );
     }
 }
-
 
 ReactDOM.render(
-    <Counter />,
-    document.getElementById('root')
-)
+    <App />,
+    document.getElementById( 'root' )
+);
